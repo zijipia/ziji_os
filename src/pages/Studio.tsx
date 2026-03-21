@@ -10,15 +10,26 @@ const StudioPage: React.FC<{ transition: any }> = ({ transition }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
+  const CHANNEL_ID = import.meta.env.VITE_YOUTUBE_CHANNEL_ID || 'UC-lHJZR3GqxkQlow71PqfPg';
+
   useEffect(() => {
     const fetchYouTubeData = async () => {
+      if (!YOUTUBE_API_KEY) {
+        setError('YOUTUBE_API_KEY_MISSING');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-        // Fetch Videos from Proxy
-        const videosRes = await fetch('/api/youtube/videos');
+        // Fetch Videos
+        const videosRes = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=5&type=video`
+        );
         const videosData = await videosRes.json();
         
-        if (videosData.error) throw new Error(videosData.error);
+        if (videosData.error) throw new Error(videosData.error.message);
 
         const formattedVideos = (videosData.items || []).map((item: any) => ({
           id: item.id.videoId,
@@ -28,8 +39,10 @@ const StudioPage: React.FC<{ transition: any }> = ({ transition }) => {
           url: `https://www.youtube.com/watch?v=${item.id.videoId}`
         }));
 
-        // Fetch Comments from Proxy
-        const commentsRes = await fetch('/api/youtube/comments');
+        // Fetch Comments
+        const commentsRes = await fetch(
+          `https://www.googleapis.com/youtube/v3/commentThreads?key=${YOUTUBE_API_KEY}&allThreadsRelatedToChannelId=${CHANNEL_ID}&part=snippet&maxResults=5&order=time`
+        );
         const commentsData = await commentsRes.json();
 
         const formattedComments = (commentsData.items || []).map((item: any) => ({
@@ -40,8 +53,10 @@ const StudioPage: React.FC<{ transition: any }> = ({ transition }) => {
           publishedAt: new Date(item.snippet.topLevelComment.snippet.publishedAt).toLocaleDateString()
         }));
 
-        // Fetch Channel Stats from Proxy
-        const statsRes = await fetch('/api/youtube/stats');
+        // Fetch Channel Stats
+        const statsRes = await fetch(
+          `https://www.googleapis.com/youtube/v3/channels?key=${YOUTUBE_API_KEY}&id=${CHANNEL_ID}&part=statistics`
+        );
         const statsData = await statsRes.json();
         if (statsData.items && statsData.items[0]) {
           setStats(statsData.items[0].statistics);
@@ -57,7 +72,7 @@ const StudioPage: React.FC<{ transition: any }> = ({ transition }) => {
     };
 
     fetchYouTubeData();
-  }, []);
+  }, [YOUTUBE_API_KEY, CHANNEL_ID]);
 
   const formatNumber = (num: string) => {
     const n = parseInt(num);
@@ -174,11 +189,11 @@ const StudioPage: React.FC<{ transition: any }> = ({ transition }) => {
             <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             <span className="font-headline text-[10px] tracking-[0.3em] text-primary animate-pulse uppercase">UPLINKING_YOUTUBE_DATA...</span>
           </div>
-        ) : error && error.includes('YOUTUBE_API_KEY') ? (
+        ) : error === 'YOUTUBE_API_KEY_MISSING' ? (
           <div className="bg-surface-container-high border border-outline-variant/20 p-8 rounded-xl text-center space-y-4">
             <div className="text-primary opacity-50 flex justify-center"><Youtube className="w-12 h-12" /></div>
-            <h3 className="font-headline text-xl font-bold uppercase">SERVER_CONFIG_REQUIRED</h3>
-            <p className="text-on-surface-variant text-sm max-w-md mx-auto">The YouTube API key is not configured on the server. Please check the server environment variables.</p>
+            <h3 className="font-headline text-xl font-bold uppercase">API_KEY_REQUIRED</h3>
+            <p className="text-on-surface-variant text-sm max-w-md mx-auto">Please configure VITE_YOUTUBE_API_KEY in your environment to synchronize with the Ziji Studio channel.</p>
           </div>
         ) : error ? (
           <div className="bg-red-500/10 border border-red-500/30 p-6 text-red-500 font-headline text-sm uppercase tracking-widest">
