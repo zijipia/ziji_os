@@ -136,7 +136,7 @@ const TerminalModule: React.FC<{ setActiveModule: (m: Module) => void }> = ({ se
       <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-l-2 border-primary/20 pl-8">
         <div className="space-y-2">
           <span className="font-headline text-primary uppercase tracking-[0.3em] text-xs">STATUS: NEURAL_LINK_ACTIVE</span>
-          <h1 className="font-headline text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none font-['Inter']">
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none font-vietnam">
             INITIATING <span className="text-primary">NGUYỄN</span><br />
             <span className="text-secondary">THANH PHÚ</span>
           </h1>
