@@ -1,20 +1,35 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# ZIJI_OS
 
-# Run and deploy your AI Studio app
+A high-fidelity cyber-electronic command interface and personal portfolio system.
 
-This contains everything you need to run your app locally.
+## 🚀 Features
 
-View your app in AI Studio: https://ai.studio/apps/80614fed-8f44-4fa5-b88e-13b764f25087
+- **Holographic UI**: Advanced CSS effects including scanlines, circuit grids, and glassmorphism.
+- **Interactive Modules**:
+  - **TERMINAL**: System overview and quick links.
+  - **ARCHIVES**: Project repository with status tracking.
+  - **SPECS**: Technical hardware and software manifest.
+  - **STUDIO**: Audio-visual production environment.
+  - **PORTAL**: Secure communication uplink.
+  - **SHELL**: Functional command-line interface.
+- **Neural Link Settings**: Real-time customization of visual effects and system performance.
+- **Responsive Design**: Optimized for high-resolution displays and mobile devices.
 
-## Run Locally
+## 🛠️ Tech Stack
 
-**Prerequisites:**  Node.js
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion (motion/react)
+- **Icons**: Lucide React
 
+## 👨‍💻 Developer
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+**NGUYỄN THANH PHÚ**
+- Facebook: [Ziji.Pia](https://www.facebook.com/Ziji.Pia)
+- Github: [zijipia](https://github.com/zijipia)
+- Youtube: [@ZijiStudio](https://www.youtube.com/@ZijiStudio)
+**Google**
+- AiStudio: [AiStudio](https://aistudio.google.com)
+- Gemini: [Gemini](https://gemini.google.com)
+---
+© 2024 ZIJI_CORE. ALL RIGHTS RESERVED.

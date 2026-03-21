@@ -35,6 +35,12 @@ import {
 
 type Module = 'TERMINAL' | 'ARCHIVES' | 'SPECS' | 'STUDIO' | 'PORTAL' | 'SHELL' | 'SETTINGS';
 
+interface AppSettings {
+  scanline: boolean;
+  circuitGrid: number;
+  neuralAcceleration: boolean;
+}
+
 // --- Components ---
 
 const Navbar = ({ activeModule, setActiveModule }: { activeModule: Module, setActiveModule: (m: Module) => void }) => {
@@ -116,7 +122,7 @@ const Footer = () => (
         ))}
       </div>
       <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-on-surface-variant/50">
-        © 2024 ZIJI_CORE. ALL RIGHTS RESERVED.
+        © 2024 ZIJI_CORE. DESIGNED BY NGUYỄN THANH PHÚ.
       </div>
     </div>
   </footer>
@@ -124,11 +130,12 @@ const Footer = () => (
 
 // --- Modules ---
 
-const TerminalModule: React.FC<{ setActiveModule: (m: Module) => void }> = ({ setActiveModule }) => (
+const TerminalModule: React.FC<{ setActiveModule: (m: Module) => void, transition: any }> = ({ setActiveModule, transition }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -20 }}
+    transition={transition}
     className="space-y-16"
   >
     <section className="relative pt-12">
@@ -137,8 +144,8 @@ const TerminalModule: React.FC<{ setActiveModule: (m: Module) => void }> = ({ se
         <div className="space-y-2">
           <span className="font-headline text-primary uppercase tracking-[0.3em] text-xs">STATUS: NEURAL_LINK_ACTIVE</span>
           <h1 className="text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none font-vietnam">
-            INITIATING <span className="text-primary">NGUYỄN</span><br />
-            <span className="text-secondary">THANH PHÚ</span>
+            INITIATING <span className="text-primary">Ziji</span><br />
+            <span className="text-secondary">NG.THANH PHÚ</span>
           </h1>
         </div>
       </div>
@@ -267,11 +274,12 @@ const TerminalModule: React.FC<{ setActiveModule: (m: Module) => void }> = ({ se
   </motion.div>
 );
 
-const ArchivesModule: React.FC = () => (
+const ArchivesModule: React.FC<{ transition: any }> = ({ transition }) => (
   <motion.div 
     initial={{ opacity: 0, x: 20 }}
     animate={{ opacity: 1, x: 0 }}
     exit={{ opacity: 0, x: -20 }}
+    transition={transition}
     className="space-y-12"
   >
     <header className="border-l-4 border-primary pl-8 py-4">
@@ -317,11 +325,12 @@ const ArchivesModule: React.FC = () => (
   </motion.div>
 );
 
-const SpecsModule: React.FC = () => (
+const SpecsModule: React.FC<{ transition: any }> = ({ transition }) => (
   <motion.div 
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 1.05 }}
+    transition={transition}
     className="space-y-12"
   >
     <header className="flex flex-col md:flex-row justify-between items-end gap-8 border-l-2 border-primary/20 pl-8">
@@ -423,11 +432,12 @@ const SpecsModule: React.FC = () => (
   </motion.div>
 );
 
-const StudioModule: React.FC = () => (
+const StudioModule: React.FC<{ transition: any }> = ({ transition }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -20 }}
+    transition={transition}
     className="space-y-12"
   >
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -520,11 +530,12 @@ const StudioModule: React.FC = () => (
   </motion.div>
 );
 
-const PortalModule: React.FC = () => (
+const PortalModule: React.FC<{ transition: any }> = ({ transition }) => (
   <motion.div 
     initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
     exit={{ opacity: 0, x: 20 }}
+    transition={transition}
     className="space-y-12"
   >
     <header className="border-l-4 border-primary pl-8 py-4">
@@ -623,7 +634,7 @@ const PortalModule: React.FC = () => (
   </motion.div>
 );
 
-const TerminalShellModule: React.FC = () => {
+const TerminalShellModule: React.FC<{ transition: any }> = ({ transition }) => {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([
     'ZIJI_OS [Version 4.2.0]',
@@ -671,6 +682,7 @@ const TerminalShellModule: React.FC = () => {
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.02 }}
+      transition={transition}
       className="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col h-[60vh] shadow-2xl"
     >
       <div className="bg-surface-container-high px-4 py-2 flex items-center justify-between border-b border-outline-variant/10">
@@ -702,11 +714,12 @@ const TerminalShellModule: React.FC = () => {
   );
 };
 
-const SettingsModule: React.FC = () => (
+const SettingsModule: React.FC<{ settings: AppSettings, setSettings: React.Dispatch<React.SetStateAction<AppSettings>>, transition: any }> = ({ settings, setSettings, transition }) => (
   <motion.div 
     initial={{ opacity: 0, x: 20 }}
     animate={{ opacity: 1, x: 0 }}
     exit={{ opacity: 0, x: -20 }}
+    transition={transition}
     className="space-y-12"
   >
     <header className="border-l-4 border-secondary pl-8 py-4">
@@ -725,18 +738,32 @@ const SettingsModule: React.FC = () => (
               <div className="text-sm font-bold uppercase">SCANLINE_EFFECT</div>
               <div className="text-[10px] text-on-surface-variant uppercase">Toggle CRT-style overlay</div>
             </div>
-            <div className="w-12 h-6 bg-primary rounded-full relative cursor-pointer">
-              <div className="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+            <div 
+              onClick={() => setSettings(s => ({ ...s, scanline: !s.scanline }))}
+              className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${settings.scanline ? 'bg-primary' : 'bg-surface-container-highest'}`}
+            >
+              <motion.div 
+                animate={{ x: settings.scanline ? 24 : 4 }}
+                className="absolute top-1 w-4 h-4 bg-on-primary rounded-full"
+              />
             </div>
           </div>
-          <div className="flex justify-between items-center opacity-50">
-            <div>
-              <div className="text-sm font-bold uppercase">CIRCUIT_GRID</div>
-              <div className="text-[10px] text-on-surface-variant uppercase">Background pattern intensity</div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="text-sm font-bold uppercase">CIRCUIT_GRID</div>
+                <div className="text-[10px] text-on-surface-variant uppercase">Background pattern intensity</div>
+              </div>
+              <span className="text-xs font-mono text-primary">{settings.circuitGrid}%</span>
             </div>
-            <div className="w-32 h-1 bg-surface-container-highest rounded-full overflow-hidden">
-              <div className="h-full bg-primary w-[60%]"></div>
-            </div>
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value={settings.circuitGrid}
+              onChange={(e) => setSettings(s => ({ ...s, circuitGrid: parseInt(e.target.value) }))}
+              className="w-full h-1 bg-surface-container-highest rounded-full appearance-none cursor-pointer accent-primary"
+            />
           </div>
         </div>
       </div>
@@ -751,8 +778,14 @@ const SettingsModule: React.FC = () => (
               <div className="text-sm font-bold uppercase">NEURAL_ACCELERATION</div>
               <div className="text-[10px] text-on-surface-variant uppercase">Enable high-speed transitions</div>
             </div>
-            <div className="w-12 h-6 bg-secondary rounded-full relative cursor-pointer">
-              <div className="absolute right-1 top-1 w-4 h-4 bg-on-secondary rounded-full"></div>
+            <div 
+              onClick={() => setSettings(s => ({ ...s, neuralAcceleration: !s.neuralAcceleration }))}
+              className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${settings.neuralAcceleration ? 'bg-secondary' : 'bg-surface-container-highest'}`}
+            >
+              <motion.div 
+                animate={{ x: settings.neuralAcceleration ? 24 : 4 }}
+                className="absolute top-1 w-4 h-4 bg-on-secondary rounded-full"
+              />
             </div>
           </div>
           <div className="flex justify-between items-center">
@@ -772,22 +805,59 @@ const SettingsModule: React.FC = () => (
 
 export default function App() {
   const [activeModule, setActiveModule] = useState<Module>('TERMINAL');
+  const [settings, setSettings] = useState<AppSettings>(() => {
+    const saved = localStorage.getItem('ziji_settings');
+    return saved ? JSON.parse(saved) : {
+      scanline: true,
+      circuitGrid: 50,
+      neuralAcceleration: true
+    };
+  });
+
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    localStorage.setItem('ziji_settings', JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const transition = {
+    type: 'spring',
+    stiffness: settings.neuralAcceleration ? 500 : 200,
+    damping: settings.neuralAcceleration ? 40 : 25,
+    mass: 1
+  };
 
   return (
-    <div className="min-h-screen flex flex-col circuit-bg">
-      <div className="scanline"></div>
+    <div 
+      className="min-h-screen flex flex-col circuit-bg transition-all duration-500"
+      style={{ 
+        '--grid-opacity': settings.circuitGrid / 100,
+        '--mouse-x': `${mousePos.x}px`,
+        '--mouse-y': `${mousePos.y}px`
+      } as React.CSSProperties}
+    >
+      <div className="mouse-glow"></div>
+      {settings.scanline && <div className="scanline"></div>}
       
       <Navbar activeModule={activeModule} setActiveModule={setActiveModule} />
       
       <main className="flex-1 pt-32 pb-20 px-8 max-w-7xl mx-auto w-full">
         <AnimatePresence mode="wait">
-          {activeModule === 'TERMINAL' && <TerminalModule key="terminal" setActiveModule={setActiveModule} />}
-          {activeModule === 'ARCHIVES' && <ArchivesModule key="archives" />}
-          {activeModule === 'SPECS' && <SpecsModule key="specs" />}
-          {activeModule === 'STUDIO' && <StudioModule key="studio" />}
-          {activeModule === 'PORTAL' && <PortalModule key="portal" />}
-          {activeModule === 'SHELL' && <TerminalShellModule key="shell" />}
-          {activeModule === 'SETTINGS' && <SettingsModule key="settings" />}
+          {activeModule === 'TERMINAL' && <TerminalModule key="terminal" setActiveModule={setActiveModule} transition={transition} />}
+          {activeModule === 'ARCHIVES' && <ArchivesModule key="archives" transition={transition} />}
+          {activeModule === 'SPECS' && <SpecsModule key="specs" transition={transition} />}
+          {activeModule === 'STUDIO' && <StudioModule key="studio" transition={transition} />}
+          {activeModule === 'PORTAL' && <PortalModule key="portal" transition={transition} />}
+          {activeModule === 'SHELL' && <TerminalShellModule key="shell" transition={transition} />}
+          {activeModule === 'SETTINGS' && <SettingsModule key="settings" settings={settings} setSettings={setSettings} transition={transition} />}
         </AnimatePresence>
       </main>
 

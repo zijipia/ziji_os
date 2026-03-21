@@ -35,8 +35,17 @@
   }
 
   .circuit-bg {
-    background-image: radial-gradient(circle at 2px 2px, rgba(129, 236, 255, 0.05) 1px, transparent 0);
+    background-image: radial-gradient(circle at 2px 2px, rgba(129, 236, 255, var(--grid-opacity, 0.5)) 1px, transparent 0);
     background-size: 24px 24px;
+  }
+
+  .mouse-glow {
+    @apply pointer-events-none fixed inset-0 z-0;
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(129, 236, 255, 0.08),
+      transparent 40%
+    );
   }
 
   .scanline {
