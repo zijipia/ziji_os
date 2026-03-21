@@ -6,12 +6,13 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Activity } from 'lucide-react';
+import { Activity, Bot } from 'lucide-react';
 
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CircuitGrid from './components/CircuitGrid';
+import NeuralAssistant from './components/NeuralAssistant';
 
 // Pages
 import TerminalPage from './pages/Terminal';
@@ -37,6 +38,7 @@ export default function App() {
   });
 
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('ziji_settings', JSON.stringify(settings));
@@ -90,9 +92,17 @@ export default function App() {
 
       <Footer />
 
+      <NeuralAssistant 
+        isOpen={isAssistantOpen} 
+        onClose={() => setIsAssistantOpen(false)} 
+      />
+
       {/* Floating Action Button */}
-      <button className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-dim text-on-primary shadow-[0_0_20px_rgba(129,236,255,0.4)] flex items-center justify-center hover:scale-110 transition-transform z-50">
-        <Activity className="w-6 h-6" />
+      <button 
+        onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+        className={`fixed bottom-8 right-8 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-dim text-on-primary shadow-[0_0_20px_rgba(129,236,255,0.4)] flex items-center justify-center hover:scale-110 transition-all z-50 ${isAssistantOpen ? 'rotate-90 scale-110' : ''}`}
+      >
+        {isAssistantOpen ? <Activity className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
       </button>
     </div>
   );
