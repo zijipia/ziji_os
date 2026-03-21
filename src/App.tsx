@@ -28,7 +28,8 @@ import {
   Keyboard,
   Box,
   ExternalLink,
-  Youtube
+  Youtube,
+  MessageSquare
 } from 'lucide-react';
 
 // --- Types ---
@@ -39,6 +40,22 @@ interface AppSettings {
   scanline: boolean;
   circuitGrid: number;
   neuralAcceleration: boolean;
+}
+
+interface YouTubeVideo {
+  id: string;
+  title: string;
+  thumbnail: string;
+  publishedAt: string;
+  url: string;
+}
+
+interface YouTubeComment {
+  id: string;
+  author: string;
+  authorThumb: string;
+  text: string;
+  publishedAt: string;
 }
 
 // --- Components ---
@@ -574,103 +591,237 @@ const SpecsModule: React.FC<{ transition: any }> = ({ transition }) => (
   </motion.div>
 );
 
-const StudioModule: React.FC<{ transition: any }> = ({ transition }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -20 }}
-    transition={transition}
-    className="space-y-12"
-  >
-    <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div className="lg:col-span-8 bg-surface-container-low border border-outline-variant/15 p-8 rounded-xl relative overflow-hidden">
-        <div className="absolute top-4 right-4 text-[10px] tracking-widest text-secondary uppercase opacity-40">SIGNAL_FLOW: ACTIVE</div>
-        <div className="space-y-8">
-          <div>
-            <h1 className="font-headline text-5xl font-black tracking-tighter uppercase">STUDIO_MODULE</h1>
-            <p className="text-on-surface-variant max-w-md mt-2">Synchronized multi-track environment. Real-time frequency analysis and obsidian-depth synthesis.</p>
-          </div>
-          
-          <div className="h-48 flex items-end justify-between gap-1 px-4">
-            {[40, 65, 30, 85, 50, 95, 70, 40, 60, 30, 75, 55, 90, 45, 65, 35, 80, 50, 70].map((h, i) => (
-              <div key={i} className={`w-2 rounded-full ${i % 3 === 0 ? 'bg-primary' : i % 3 === 1 ? 'bg-secondary' : 'bg-primary-dim'}`} style={{ height: `${h}%` }}></div>
-            ))}
-          </div>
+const StudioModule: React.FC<{ transition: any }> = ({ transition }) => {
+  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
+  const [comments, setComments] = useState<YouTubeComment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-          <div className="flex items-center gap-6 bg-surface-container-highest/50 p-4 rounded-full border border-outline-variant/10">
-            <button className="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-[0_0_15px_rgba(129,236,255,0.4)]">
-              <Play className="fill-current" />
-            </button>
-            <div className="flex-1">
-              <div className="flex justify-between text-[10px] font-headline text-on-surface-variant mb-1">
-                <span>01:42 / 04:15</span>
-                <span>CURRENT_TRACK: "NEON_DRIFT_V2"</span>
+  const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
+  const CHANNEL_ID = import.meta.env.VITE_YOUTUBE_CHANNEL_ID || 'UC-lHJZR3GqxkQlow71PqfPg';
+
+  useEffect(() => {
+    const fetchYouTubeData = async () => {
+      if (!YOUTUBE_API_KEY) {
+        setError('YOUTUBE_API_KEY_MISSING');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        // Fetch Videos
+        const videosRes = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=5&type=video`
+        );
+        const videosData = await videosRes.json();
+        
+        if (videosData.error) throw new Error(videosData.error.message);
+
+        const formattedVideos = (videosData.items || []).map((item: any) => ({
+          id: item.id.videoId,
+          title: item.snippet.title,
+          thumbnail: item.snippet.thumbnails.high.url,
+          publishedAt: new Date(item.snippet.publishedAt).toLocaleDateString(),
+          url: `https://www.youtube.com/watch?v=${item.id.videoId}`
+        }));
+
+        // Fetch Comments
+        const commentsRes = await fetch(
+          `https://www.googleapis.com/youtube/v3/commentThreads?key=${YOUTUBE_API_KEY}&allThreadsRelatedToChannelId=${CHANNEL_ID}&part=snippet&maxResults=5&order=time`
+        );
+        const commentsData = await commentsRes.json();
+
+        const formattedComments = (commentsData.items || []).map((item: any) => ({
+          id: item.id,
+          author: item.snippet.topLevelComment.snippet.authorDisplayName,
+          authorThumb: item.snippet.topLevelComment.snippet.authorProfileImageUrl,
+          text: item.snippet.topLevelComment.snippet.textDisplay,
+          publishedAt: new Date(item.snippet.topLevelComment.snippet.publishedAt).toLocaleDateString()
+        }));
+
+        setVideos(formattedVideos);
+        setComments(formattedComments);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchYouTubeData();
+  }, [YOUTUBE_API_KEY, CHANNEL_ID]);
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={transition}
+      className="space-y-12"
+    >
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-8 bg-surface-container-low border border-outline-variant/15 p-8 rounded-xl relative overflow-hidden">
+          <div className="absolute top-4 right-4 text-[10px] tracking-widest text-secondary uppercase opacity-40">SIGNAL_FLOW: ACTIVE</div>
+          <div className="space-y-8">
+            <div>
+              <h1 className="font-headline text-5xl font-black tracking-tighter uppercase">STUDIO_MODULE</h1>
+              <p className="text-on-surface-variant max-w-md mt-2">Synchronized multi-track environment. Real-time frequency analysis and obsidian-depth synthesis.</p>
+            </div>
+            
+            <div className="h-48 flex items-end justify-between gap-1 px-4">
+              {[40, 65, 30, 85, 50, 95, 70, 40, 60, 30, 75, 55, 90, 45, 65, 35, 80, 50, 70].map((h, i) => (
+                <div key={i} className={`w-2 rounded-full ${i % 3 === 0 ? 'bg-primary' : i % 3 === 1 ? 'bg-secondary' : 'bg-primary-dim'}`} style={{ height: `${h}%` }}></div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-6 bg-surface-container-highest/50 p-4 rounded-full border border-outline-variant/10">
+              <button className="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-[0_0_15px_rgba(129,236,255,0.4)]">
+                <Play className="fill-current" />
+              </button>
+              <div className="flex-1">
+                <div className="flex justify-between text-[10px] font-headline text-on-surface-variant mb-1">
+                  <span>01:42 / 04:15</span>
+                  <span>CURRENT_TRACK: "NEON_DRIFT_V2"</span>
+                </div>
+                <div className="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-primary to-secondary w-[40%] shadow-[0_0_8px_rgba(129,236,255,0.8)]"></div>
+                </div>
               </div>
-              <div className="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-primary to-secondary w-[40%] shadow-[0_0_8px_rgba(129,236,255,0.8)]"></div>
+              <div className="flex gap-4 text-on-surface-variant">
+                <SkipForward className="w-5 h-5 cursor-pointer hover:text-primary" />
+                <Volume2 className="w-5 h-5 cursor-pointer hover:text-primary" />
               </div>
             </div>
-            <div className="flex gap-4 text-on-surface-variant">
-              <SkipForward className="w-5 h-5 cursor-pointer hover:text-primary" />
-              <Volume2 className="w-5 h-5 cursor-pointer hover:text-primary" />
-            </div>
           </div>
         </div>
-      </div>
 
-      <div className="lg:col-span-4 grid grid-rows-2 gap-6">
-        <div className="bg-surface-container-high p-6 rounded-xl border-b-2 border-primary/30">
-          <div className="flex justify-between items-start mb-4">
-            <span className="text-[10px] text-primary uppercase font-bold tracking-widest">CPU_LOAD</span>
-            <span className="text-[10px] text-on-surface-variant">42.8%</span>
+        <div className="lg:col-span-4 grid grid-rows-2 gap-6">
+          <div className="bg-surface-container-high p-6 rounded-xl border-b-2 border-primary/30">
+            <div className="flex justify-between items-start mb-4">
+              <span className="text-[10px] text-primary uppercase font-bold tracking-widest">CPU_LOAD</span>
+              <span className="text-[10px] text-on-surface-variant">42.8%</span>
+            </div>
+            <div className="text-3xl font-headline font-bold uppercase">OPTIMIZED</div>
+            <div className="mt-4 flex gap-1">
+              {[1, 1, 0.2, 0.2, 0.2].map((o, i) => <div key={i} className="h-1 flex-1 bg-primary" style={{ opacity: o }}></div>)}
+            </div>
           </div>
-          <div className="text-3xl font-headline font-bold uppercase">OPTIMIZED</div>
-          <div className="mt-4 flex gap-1">
-            {[1, 1, 0.2, 0.2, 0.2].map((o, i) => <div key={i} className="h-1 flex-1 bg-primary" style={{ opacity: o }}></div>)}
+          <div className="bg-surface-container-high p-6 rounded-xl border-b-2 border-secondary/30">
+            <span className="text-[10px] text-secondary uppercase font-bold tracking-widest block mb-4">SESSION_METRICS</span>
+            <div className="grid grid-cols-2 gap-4">
+              <div><div className="text-[10px] text-on-surface-variant uppercase">Uptime</div><div className="text-xl font-headline font-bold">142H</div></div>
+              <div><div className="text-[10px] text-on-surface-variant uppercase">Exports</div><div className="text-xl font-headline font-bold">892</div></div>
+              <div><div className="text-[10px] text-on-surface-variant uppercase">BPM_AVG</div><div className="text-xl font-headline font-bold">128</div></div>
+              <div><div className="text-[10px] text-on-surface-variant uppercase">Bitrate</div><div className="text-xl font-headline font-bold">32-Bit</div></div>
+            </div>
           </div>
         </div>
-        <div className="bg-surface-container-high p-6 rounded-xl border-b-2 border-secondary/30">
-          <span className="text-[10px] text-secondary uppercase font-bold tracking-widest block mb-4">SESSION_METRICS</span>
-          <div className="grid grid-cols-2 gap-4">
-            <div><div className="text-[10px] text-on-surface-variant uppercase">Uptime</div><div className="text-xl font-headline font-bold">142H</div></div>
-            <div><div className="text-[10px] text-on-surface-variant uppercase">Exports</div><div className="text-xl font-headline font-bold">892</div></div>
-            <div><div className="text-[10px] text-on-surface-variant uppercase">BPM_AVG</div><div className="text-xl font-headline font-bold">128</div></div>
-            <div><div className="text-[10px] text-on-surface-variant uppercase">Bitrate</div><div className="text-xl font-headline font-bold">32-Bit</div></div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section className="space-y-6">
-      <div className="flex justify-between items-end border-b border-outline-variant/10 pb-4">
-        <h2 className="font-headline text-2xl font-bold uppercase tracking-tight">STUDIO_OUTPUTS</h2>
-        <button className="text-[10px] font-headline uppercase tracking-widest text-primary border border-primary/20 px-4 py-2 hover:bg-primary/10 transition-colors">REFRESH_BUFFER</button>
-      </div>
-      <div className="space-y-2">
-        {[
-          { title: 'CYBER_CHASM_EXPANSION', meta: 'WAV | 174 BPM | KEY: G# MIN', date: '04.12.2024', tag: 'FINAL_MIX_V4', color: 'secondary' },
-          { title: 'VOID_COMMAND_CENTER', meta: 'MP3 | 120 BPM | KEY: C MAJ', date: '03.28.2024', tag: 'DRAFT_WIP', color: 'primary' },
-          { title: 'SYNTHETIC_DREAMS_003', meta: 'WAV | 95 BPM | KEY: F MIN', date: '03.15.2024', tag: 'MASTERED', color: 'secondary' },
-        ].map((track, i) => (
-          <div key={i} className={`flex items-center gap-6 p-4 bg-surface-container-low hover:bg-surface-container-high border-l-2 border-transparent hover:border-${track.color} transition-all group cursor-pointer`}>
-            <div className={`w-12 h-12 bg-surface-variant flex items-center justify-center rounded text-${track.color} opacity-50 group-hover:opacity-100`}>
-              <Music className="w-6 h-6" />
-            </div>
-            <div className="flex-1">
-              <div className="font-headline font-bold uppercase">{track.title}</div>
-              <div className="text-[10px] text-on-surface-variant tracking-widest uppercase">{track.meta}</div>
-            </div>
-            <div className="text-right hidden md:block">
-              <div className="text-xs text-on-surface-variant">{track.date}</div>
-              <div className={`text-[10px] text-${track.color}`}>{track.tag}</div>
-            </div>
-            <Download className="w-5 h-5 text-on-surface-variant hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+      <section className="space-y-6">
+        <div className="flex justify-between items-end border-b border-outline-variant/10 pb-4">
+          <h2 className="font-headline text-2xl font-bold uppercase tracking-tight flex items-center gap-3">
+            <Youtube className="w-6 h-6 text-red-500" /> STUDIO_SHOWCASE
+          </h2>
+          <button 
+            onClick={() => window.location.reload()}
+            className="text-[10px] font-headline uppercase tracking-widest text-primary border border-primary/20 px-4 py-2 hover:bg-primary/10 transition-colors"
+          >
+            REFRESH_BUFFER
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12 space-y-4">
+            <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <span className="font-headline text-[10px] tracking-[0.3em] text-primary animate-pulse uppercase">UPLINKING_YOUTUBE_DATA...</span>
           </div>
-        ))}
-      </div>
-    </section>
-  </motion.div>
-);
+        ) : error === 'YOUTUBE_API_KEY_MISSING' ? (
+          <div className="bg-surface-container-high border border-outline-variant/20 p-8 rounded-xl text-center space-y-4">
+            <div className="text-primary opacity-50 flex justify-center"><Youtube className="w-12 h-12" /></div>
+            <h3 className="font-headline text-xl font-bold uppercase">API_KEY_REQUIRED</h3>
+            <p className="text-on-surface-variant text-sm max-w-md mx-auto">Please configure VITE_YOUTUBE_API_KEY in your environment to synchronize with the Ziji Studio channel.</p>
+          </div>
+        ) : error ? (
+          <div className="bg-red-500/10 border border-red-500/30 p-6 text-red-500 font-headline text-sm uppercase tracking-widest">
+            ERROR: {error}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Latest Videos */}
+            <div className="lg:col-span-8 space-y-4">
+              <div className="text-[10px] font-headline text-on-surface-variant uppercase tracking-widest mb-4">LATEST_TRANSMISSIONS</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {videos.map((video) => (
+                  <a 
+                    key={video.id} 
+                    href={video.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="group relative bg-surface-container-low border border-outline-variant/10 overflow-hidden hover:border-primary/50 transition-all"
+                  >
+                    <div className="aspect-video relative overflow-hidden">
+                      <img 
+                        src={video.thumbnail} 
+                        alt={video.title} 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg">
+                          <Play className="fill-current ml-1" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <div className="text-[10px] text-primary font-bold tracking-widest uppercase">{video.publishedAt}</div>
+                      <h3 className="font-headline text-sm font-bold uppercase line-clamp-2 group-hover:text-primary transition-colors">{video.title}</h3>
+                      <div className="flex items-center gap-2 text-[10px] text-on-surface-variant uppercase tracking-widest">
+                        <span>PLAY_NOW</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Recent Comments */}
+            <div className="lg:col-span-4 space-y-4">
+              <div className="text-[10px] font-headline text-on-surface-variant uppercase tracking-widest mb-4">COMMUNITY_FEEDBACK</div>
+              <div className="space-y-4">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="bg-surface-container-low p-4 border-l-2 border-secondary/30 hover:bg-surface-container-high transition-colors">
+                    <div className="flex items-center gap-3 mb-2">
+                      <img 
+                        src={comment.authorThumb} 
+                        alt={comment.author} 
+                        className="w-6 h-6 rounded-full border border-outline-variant/20"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="flex-1">
+                        <div className="text-[10px] font-bold text-secondary uppercase tracking-tight">{comment.author}</div>
+                        <div className="text-[8px] text-on-surface-variant uppercase">{comment.publishedAt}</div>
+                      </div>
+                      <MessageSquare className="w-3 h-3 text-on-surface-variant opacity-30" />
+                    </div>
+                    <p className="text-[11px] text-on-surface-variant leading-relaxed line-clamp-3 italic" dangerouslySetInnerHTML={{ __html: comment.text }}></p>
+                  </div>
+                ))}
+                {comments.length === 0 && (
+                  <div className="text-[10px] text-on-surface-variant uppercase tracking-widest text-center py-8 border border-dashed border-outline-variant/20">
+                    NO_RECENT_COMMENTS_FOUND
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+    </motion.div>
+  );
+};
 
 const PortalModule: React.FC<{ transition: any }> = ({ transition }) => (
   <motion.div 
