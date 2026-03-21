@@ -60,8 +60,8 @@ const Navbar = ({ activeModule, setActiveModule }: { activeModule: Module, setAc
             onClick={() => setActiveModule(item)}
             className={`font-headline tracking-tighter uppercase text-sm transition-all duration-300 cursor-pointer ${
               activeModule === item 
-                ? 'text-primary border-b-2 border-primary pb-1 shadow-[0_2px_10px_rgba(129,236,255,0.3)]' 
-                : 'text-primary/50 hover:text-secondary'
+                ? 'text-primary border-b-2 border-primary pb-1 drop-shadow-[0_0_8px_rgba(129,236,255,0.6)]' 
+                : 'text-primary/50 hover:text-secondary hover:drop-shadow-[0_0_5px_rgba(129,236,255,0.3)]'
             }`}
           >
             {item}
