@@ -21,13 +21,17 @@ const ArchivesPage: React.FC<{ transition: any }> = ({ transition }) => {
         const data1 = await res1.json();
         const data2 = await res2.json();
 
-        const combined = [...data1, ...data2]
+        const combinedData = [...data1, ...data2];
+        const uniqueRepos = Array.from(new Map(combinedData.map(item => [item.node_id, item])).values());
+
+        const combined = uniqueRepos
           .sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
           .map((repo: any, index: number) => ({
-            id: repo.node_id.substring(0, 8),
+            id: repo.node_id,
+            displayId: repo.node_id.substring(0, 8),
             title: repo.name,
             status: repo.archived ? 'ARCHIVED' : 'ACTIVE',
-            tags: [repo.language, ...(repo.topics || [])].filter(Boolean).map(t => t.toUpperCase()).slice(0, 3),
+            tags: Array.from(new Set([repo.language, ...(repo.topics || [])].filter(Boolean).map(t => t.toUpperCase()))).slice(0, 3),
             color: index % 3 === 0 ? 'primary' : index % 3 === 1 ? 'secondary' : 'tertiary',
             url: repo.html_url,
             description: repo.description
@@ -74,7 +78,7 @@ const ArchivesPage: React.FC<{ transition: any }> = ({ transition }) => {
           {projects.map((project) => (
             <div key={project.id} className={`bg-surface-container-low border-b-2 border-${project.color}/20 hover:border-${project.color} transition-all p-6 space-y-6 group flex flex-col`}>
               <div className="flex justify-between items-start">
-                <div className={`text-[10px] tracking-widest text-${project.color} bg-${project.color}/10 px-2 py-1`}>ID: {project.id}</div>
+                <div className={`text-[10px] tracking-widest text-${project.color} bg-${project.color}/10 px-2 py-1`}>ID: {project.displayId}</div>
                 <div className="flex gap-1">
                   <div className={`w-1 h-1 bg-${project.color}`}></div>
                   <div className={`w-1 h-1 bg-${project.color}/40`}></div>
