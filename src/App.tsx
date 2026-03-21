@@ -58,6 +58,12 @@ interface YouTubeComment {
   publishedAt: string;
 }
 
+interface YouTubeStats {
+  subscriberCount: string;
+  viewCount: string;
+  videoCount: string;
+}
+
 // --- Components ---
 
 const CircuitGrid: React.FC<{ opacity: number, mousePos: { x: number, y: number } }> = ({ opacity, mousePos }) => {
@@ -594,6 +600,7 @@ const SpecsModule: React.FC<{ transition: any }> = ({ transition }) => (
 const StudioModule: React.FC<{ transition: any }> = ({ transition }) => {
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [comments, setComments] = useState<YouTubeComment[]>([]);
+  const [stats, setStats] = useState<YouTubeStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -640,6 +647,15 @@ const StudioModule: React.FC<{ transition: any }> = ({ transition }) => {
           publishedAt: new Date(item.snippet.topLevelComment.snippet.publishedAt).toLocaleDateString()
         }));
 
+        // Fetch Channel Stats
+        const statsRes = await fetch(
+          `https://www.googleapis.com/youtube/v3/channels?key=${YOUTUBE_API_KEY}&id=${CHANNEL_ID}&part=statistics`
+        );
+        const statsData = await statsRes.json();
+        if (statsData.items && statsData.items[0]) {
+          setStats(statsData.items[0].statistics);
+        }
+
         setVideos(formattedVideos);
         setComments(formattedComments);
       } catch (err: any) {
@@ -651,6 +667,14 @@ const StudioModule: React.FC<{ transition: any }> = ({ transition }) => {
 
     fetchYouTubeData();
   }, [YOUTUBE_API_KEY, CHANNEL_ID]);
+
+  const formatNumber = (num: string) => {
+    const n = parseInt(num);
+    if (isNaN(n)) return '0';
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return n.toString();
+  };
 
   return (
     <motion.div 
@@ -665,55 +689,77 @@ const StudioModule: React.FC<{ transition: any }> = ({ transition }) => {
           <div className="absolute top-4 right-4 text-[10px] tracking-widest text-secondary uppercase opacity-40">SIGNAL_FLOW: ACTIVE</div>
           <div className="space-y-8">
             <div>
-              <h1 className="font-headline text-5xl font-black tracking-tighter uppercase">STUDIO_MODULE</h1>
-              <p className="text-on-surface-variant max-w-md mt-2">Synchronized multi-track environment. Real-time frequency analysis and obsidian-depth synthesis.</p>
+              <h1 className="font-headline text-5xl font-black tracking-tighter uppercase">NEW_VIDEO</h1>
+              <p className="text-on-surface-variant max-w-md mt-2">Latest production from Ziji Studio. High-fidelity visual synthesis and neural-audio integration.</p>
             </div>
             
-            <div className="h-48 flex items-end justify-between gap-1 px-4">
-              {[40, 65, 30, 85, 50, 95, 70, 40, 60, 30, 75, 55, 90, 45, 65, 35, 80, 50, 70].map((h, i) => (
-                <div key={i} className={`w-2 rounded-full ${i % 3 === 0 ? 'bg-primary' : i % 3 === 1 ? 'bg-secondary' : 'bg-primary-dim'}`} style={{ height: `${h}%` }}></div>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-6 bg-surface-container-highest/50 p-4 rounded-full border border-outline-variant/10">
-              <button className="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-[0_0_15px_rgba(129,236,255,0.4)]">
-                <Play className="fill-current" />
-              </button>
-              <div className="flex-1">
-                <div className="flex justify-between text-[10px] font-headline text-on-surface-variant mb-1">
-                  <span>01:42 / 04:15</span>
-                  <span>CURRENT_TRACK: "NEON_DRIFT_V2"</span>
-                </div>
-                <div className="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-primary to-secondary w-[40%] shadow-[0_0_8px_rgba(129,236,255,0.8)]"></div>
+            {videos.length > 0 ? (
+              <div className="aspect-video relative rounded-lg overflow-hidden border border-outline-variant/20 group">
+                <img 
+                  src={videos[0].thumbnail} 
+                  alt={videos[0].title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-6 left-6 right-6 space-y-2">
+                  <div className="text-[10px] font-headline text-primary uppercase tracking-[0.4em]">PREMIERE_NOW</div>
+                  <h2 className="text-2xl font-headline font-bold uppercase tracking-tight line-clamp-2">{videos[0].title}</h2>
+                  <a 
+                    href={videos[0].url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-on-primary rounded-full font-headline text-xs font-bold uppercase tracking-widest hover:shadow-[0_0_20px_rgba(129,236,255,0.5)] transition-all"
+                  >
+                    <Play className="w-4 h-4 fill-current" /> WATCH_ON_YOUTUBE
+                  </a>
                 </div>
               </div>
-              <div className="flex gap-4 text-on-surface-variant">
-                <SkipForward className="w-5 h-5 cursor-pointer hover:text-primary" />
-                <Volume2 className="w-5 h-5 cursor-pointer hover:text-primary" />
+            ) : (
+              <div className="h-48 flex items-end justify-between gap-1 px-4">
+                {[40, 65, 30, 85, 50, 95, 70, 40, 60, 30, 75, 55, 90, 45, 65, 35, 80, 50, 70].map((h, i) => (
+                  <div key={i} className={`w-2 rounded-full ${i % 3 === 0 ? 'bg-primary' : i % 3 === 1 ? 'bg-secondary' : 'bg-primary-dim'}`} style={{ height: `${h}%` }}></div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
         </div>
 
         <div className="lg:col-span-4 grid grid-rows-2 gap-6">
           <div className="bg-surface-container-high p-6 rounded-xl border-b-2 border-primary/30">
             <div className="flex justify-between items-start mb-4">
-              <span className="text-[10px] text-primary uppercase font-bold tracking-widest">CPU_LOAD</span>
-              <span className="text-[10px] text-on-surface-variant">42.8%</span>
+              <span className="text-[10px] text-primary uppercase font-bold tracking-widest">CHANNEL_STATS</span>
+              <span className="text-[10px] text-on-surface-variant">LIVE_SYNC</span>
             </div>
-            <div className="text-3xl font-headline font-bold uppercase">OPTIMIZED</div>
-            <div className="mt-4 flex gap-1">
-              {[1, 1, 0.2, 0.2, 0.2].map((o, i) => <div key={i} className="h-1 flex-1 bg-primary" style={{ opacity: o }}></div>)}
+            <div className="space-y-4">
+              <div className="flex justify-between items-end">
+                <div className="text-[10px] text-on-surface-variant uppercase">Subscribers</div>
+                <div className="text-3xl font-headline font-bold text-primary">{stats ? formatNumber(stats.subscriberCount) : '---'}</div>
+              </div>
+              <div className="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+                <div className="h-full bg-primary w-[85%] animate-pulse"></div>
+              </div>
             </div>
           </div>
           <div className="bg-surface-container-high p-6 rounded-xl border-b-2 border-secondary/30">
-            <span className="text-[10px] text-secondary uppercase font-bold tracking-widest block mb-4">SESSION_METRICS</span>
+            <span className="text-[10px] text-secondary uppercase font-bold tracking-widest block mb-4">ENGAGEMENT_METRICS</span>
             <div className="grid grid-cols-2 gap-4">
-              <div><div className="text-[10px] text-on-surface-variant uppercase">Uptime</div><div className="text-xl font-headline font-bold">142H</div></div>
-              <div><div className="text-[10px] text-on-surface-variant uppercase">Exports</div><div className="text-xl font-headline font-bold">892</div></div>
-              <div><div className="text-[10px] text-on-surface-variant uppercase">BPM_AVG</div><div className="text-xl font-headline font-bold">128</div></div>
-              <div><div className="text-[10px] text-on-surface-variant uppercase">Bitrate</div><div className="text-xl font-headline font-bold">32-Bit</div></div>
+              <div>
+                <div className="text-[10px] text-on-surface-variant uppercase">Total Views</div>
+                <div className="text-xl font-headline font-bold">{stats ? formatNumber(stats.viewCount) : '---'}</div>
+              </div>
+              <div>
+                <div className="text-[10px] text-on-surface-variant uppercase">Videos</div>
+                <div className="text-xl font-headline font-bold">{stats ? stats.videoCount : '---'}</div>
+              </div>
+              <div>
+                <div className="text-[10px] text-on-surface-variant uppercase">Status</div>
+                <div className="text-[10px] font-headline font-bold text-secondary">VERIFIED_PARTNER</div>
+              </div>
+              <div>
+                <div className="text-[10px] text-on-surface-variant uppercase">Region</div>
+                <div className="text-[10px] font-headline font-bold">GLOBAL</div>
+              </div>
             </div>
           </div>
         </div>
