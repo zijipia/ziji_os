@@ -172,7 +172,7 @@ const StudioPage: React.FC<{ transition: any }> = ({ transition }) => {
       </section>
 
       <section className="space-y-6">
-        <div className="flex justify-between items-end border-b border-outline-variant/10 pb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-outline-variant/10 pb-4 gap-4">
           <h2 className="font-headline text-2xl font-bold uppercase tracking-tight flex items-center gap-3">
             <Youtube className="w-6 h-6 text-red-500" /> STUDIO_SHOWCASE
           </h2>

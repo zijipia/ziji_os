@@ -20,7 +20,7 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
         <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-l-2 border-primary/20 pl-8">
           <div className="space-y-2">
             <span className="font-headline text-primary uppercase tracking-[0.3em] text-xs">STATUS: NEURAL_LINK_ACTIVE</span>
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none font-vietnam">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none font-vietnam">
               INITIATING <span className="text-primary">Ziji</span><br />
               <span className="text-secondary">NG.THANH PHÚ</span>
             </h1>
@@ -31,16 +31,16 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
             <p className="text-on-surface-variant text-lg leading-relaxed">
               Developer and Content Creator since 2003. Bridging high-performance code with rhythmic content innovation. Executing digital protocols.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 onClick={() => navigate('/archives')}
-                className="px-8 py-3 border border-primary text-primary font-headline uppercase tracking-widest hover:bg-primary/10 transition-all cursor-pointer"
+                className="px-6 sm:px-8 py-3 border border-primary text-primary font-headline uppercase tracking-widest hover:bg-primary/10 transition-all cursor-pointer text-sm sm:text-base whitespace-nowrap"
               >
                 [EXECUTE_WORK_FETCH]
               </button>
               <button 
                 onClick={() => navigate('/studio')}
-                className="px-8 py-3 border border-secondary text-secondary font-headline uppercase tracking-widest hover:bg-secondary/10 transition-all cursor-pointer"
+                className="px-6 sm:px-8 py-3 border border-secondary text-secondary font-headline uppercase tracking-widest hover:bg-secondary/10 transition-all cursor-pointer text-sm sm:text-base whitespace-nowrap"
               >
                 [OPEN_STUDIO_MODULE]
               </button>
@@ -126,7 +126,7 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
             <h2 className="font-headline text-3xl font-black uppercase tracking-tighter">ESTABLISH_CONTACT_LINK</h2>
             <p className="text-on-surface-variant text-sm uppercase tracking-widest">SECURE_UPLINK_AVAILABLE // STATUS: READY</p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center md:justify-start gap-4">
             {[
               { icon: Mail, url: 'mailto:contact@ziji.world', color: 'primary' },
               { icon: Facebook, url: 'https://www.facebook.com/Ziji.Pia', color: 'primary' },
