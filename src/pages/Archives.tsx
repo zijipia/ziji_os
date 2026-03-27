@@ -1,43 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ChevronRight } from 'lucide-react';
+import { fetchRepos, Project } from '../services/dataService';
 
 const ArchivesPage: React.FC<{ transition: any }> = ({ transition }) => {
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchRepos = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
-        const [res1, res2] = await Promise.all([
-          fetch('https://api.github.com/users/zijipia/repos?sort=updated&per_page=10'),
-          fetch('https://api.github.com/users/ZiProject/repos?sort=updated&per_page=10')
-        ]);
-
-        if (!res1.ok || !res2.ok) throw new Error('Failed to fetch repositories');
-
-        const data1 = await res1.json();
-        const data2 = await res2.json();
-
-        const combinedData = [...data1, ...data2];
-        const uniqueRepos = Array.from(new Map(combinedData.map(item => [item.node_id, item])).values());
-
-        const combined = uniqueRepos
-          .sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-          .map((repo: any, index: number) => ({
-            id: repo.node_id,
-            displayId: repo.node_id.substring(0, 8),
-            title: repo.name,
-            status: repo.archived ? 'ARCHIVED' : 'ACTIVE',
-            tags: Array.from(new Set([repo.language, ...(repo.topics || [])].filter(Boolean).map(t => t.toUpperCase()))).slice(0, 3),
-            color: index % 3 === 0 ? 'primary' : index % 3 === 1 ? 'secondary' : 'tertiary',
-            url: repo.html_url,
-            description: repo.description
-          }));
-
-        setProjects(combined);
+        const data = await fetchRepos();
+        setProjects(data);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -45,7 +21,7 @@ const ArchivesPage: React.FC<{ transition: any }> = ({ transition }) => {
       }
     };
 
-    fetchRepos();
+    loadData();
   }, []);
 
   return (

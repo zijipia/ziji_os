@@ -6,13 +6,14 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Activity, Bot } from 'lucide-react';
+import { Activity, Bot, Search as SearchIcon } from 'lucide-react';
 
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CircuitGrid from './components/CircuitGrid';
 import NeuralAssistant from './components/NeuralAssistant';
+import SearchModal from './components/SearchModal';
 
 // Pages
 import TerminalPage from './pages/Terminal';
@@ -39,6 +40,21 @@ export default function App() {
 
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('ziji_settings', JSON.stringify(settings));
@@ -97,13 +113,28 @@ export default function App() {
         onClose={() => setIsAssistantOpen(false)} 
       />
 
-      {/* Floating Action Button */}
-      <button 
-        onClick={() => setIsAssistantOpen(!isAssistantOpen)}
-        className={`fixed bottom-8 right-8 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-dim text-on-primary shadow-[0_0_20px_rgba(129,236,255,0.4)] flex items-center justify-center hover:scale-110 transition-all z-50 ${isAssistantOpen ? 'rotate-90 scale-110' : ''}`}
-      >
-        {isAssistantOpen ? <Activity className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
-      </button>
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+      />
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
+        <button 
+          onClick={() => setIsSearchOpen(true)}
+          className="w-14 h-14 rounded-full bg-surface-container-high text-primary border border-primary/30 shadow-[0_0_15px_rgba(129,236,255,0.2)] flex items-center justify-center hover:scale-110 hover:bg-primary hover:text-on-primary transition-all"
+          title="Search (Cmd+K)"
+        >
+          <SearchIcon className="w-6 h-6" />
+        </button>
+        <button 
+          onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+          className={`w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-dim text-on-primary shadow-[0_0_20px_rgba(129,236,255,0.4)] flex items-center justify-center hover:scale-110 transition-all ${isAssistantOpen ? 'rotate-90 scale-110' : ''}`}
+          title="Neural Assistant"
+        >
+          {isAssistantOpen ? <Activity className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
+        </button>
+      </div>
     </div>
   );
 }
