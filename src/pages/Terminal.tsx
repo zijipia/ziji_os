@@ -3,9 +3,11 @@ import { motion } from 'motion/react';
 import { Terminal as TerminalIcon, Music, Mail, Facebook, Github, Disc, Youtube } from 'lucide-react';
 import { Module } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <motion.div 
@@ -19,9 +21,9 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
         <div className="absolute -top-10 -left-10 w-64 h-64 bg-primary/5 rounded-full blur-[120px]"></div>
         <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-l-2 border-primary/20 pl-8">
           <div className="space-y-2">
-            <span className="font-headline text-primary uppercase tracking-[0.3em] text-xs">STATUS: NEURAL_LINK_ACTIVE</span>
+            <span className="font-headline text-primary uppercase tracking-[0.3em] text-xs">{t('terminal.status')}</span>
             <h1 className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none font-vietnam">
-              INITIATING <span className="text-primary">Ziji</span><br />
+              {t('terminal.initiating')} <span className="text-primary">Ziji</span><br />
               <span className="text-secondary">NG.THANH PHÚ</span>
             </h1>
           </div>
@@ -29,20 +31,20 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8">
           <div className="space-y-8">
             <p className="text-on-surface-variant text-lg leading-relaxed">
-              Developer and Content Creator since 2003. Bridging high-performance code with rhythmic content innovation. Executing digital protocols.
+              {t('terminal.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 onClick={() => navigate('/archives')}
                 className="px-6 sm:px-8 py-3 border border-primary text-primary font-headline uppercase tracking-widest hover:bg-primary/10 transition-all cursor-pointer text-sm sm:text-base whitespace-nowrap"
               >
-                [EXECUTE_WORK_FETCH]
+                {t('terminal.execute_work')}
               </button>
               <button 
                 onClick={() => navigate('/studio')}
                 className="px-6 sm:px-8 py-3 border border-secondary text-secondary font-headline uppercase tracking-widest hover:bg-secondary/10 transition-all cursor-pointer text-sm sm:text-base whitespace-nowrap"
               >
-                [OPEN_STUDIO_MODULE]
+                {t('terminal.open_studio')}
               </button>
             </div>
           </div>
@@ -58,7 +60,7 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
             <div className="absolute bottom-4 left-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span className="text-[10px] font-headline uppercase tracking-widest text-primary">LIVE_INTRO_FEED</span>
+              <span className="text-[10px] font-headline uppercase tracking-widest text-primary">{t('terminal.live_intro')}</span>
             </div>
           </div>
         </div>
@@ -68,7 +70,7 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
         <div className="space-y-8">
           <div className="flex items-center gap-4">
             <div className="h-px w-12 bg-primary"></div>
-            <h2 className="font-headline text-2xl font-bold uppercase tracking-widest">CORE_DATA</h2>
+            <h2 className="font-headline text-2xl font-bold uppercase tracking-widest">{t('terminal.core_data')}</h2>
           </div>
           <p className="text-on-surface-variant italic text-lg">
             "I'm a passionate developer and content creator. I love building innovative solutions and creating content that inspires others. My work spans across various technologies and platforms, constantly pushing the boundaries of what's possible in the digital space."
@@ -76,11 +78,11 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
           <div className="grid grid-cols-2 gap-6">
             <div className="bg-surface-container-low p-6 border-l-2 border-primary">
               <div className="text-4xl font-headline font-black text-primary">21</div>
-              <div className="text-xs uppercase tracking-widest text-on-surface-variant mt-1">CYCLES_OLD</div>
+              <div className="text-xs uppercase tracking-widest text-on-surface-variant mt-1">{t('terminal.cycles_old')}</div>
             </div>
             <div className="bg-surface-container-low p-6 border-l-2 border-secondary">
               <div className="text-4xl font-headline font-black text-secondary">50+</div>
-              <div className="text-xs uppercase tracking-widest text-on-surface-variant mt-1">DEPLOYMENTS</div>
+              <div className="text-xs uppercase tracking-widest text-on-surface-variant mt-1">{t('terminal.deployments')}</div>
             </div>
           </div>
         </div>
@@ -94,26 +96,26 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
               referrerPolicy="no-referrer"
             />
             <div>
-              <h3 className="font-headline text-xl font-bold text-primary uppercase">THE DIGITAL POLYMATH</h3>
+              <h3 className="font-headline text-xl font-bold text-primary uppercase">{t('terminal.polymath')}</h3>
               <p className="text-sm text-on-surface-variant mt-2 leading-relaxed">
-                Merging the logic of terminal environments with the soul of nightcore aesthetics. Every line of code is a beat; every project is a performance.
+                {t('terminal.polymath_desc')}
               </p>
-              <div className="text-[10px] uppercase tracking-widest text-primary/50 mt-4">CLASS: HYBRID_DEV_ARTIST // RANK: S</div>
+              <div className="text-[10px] uppercase tracking-widest text-primary/50 mt-4">{t('terminal.class')}</div>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4">
             <div className="flex gap-4 items-center p-4 bg-surface-container-high/50 border border-outline-variant/5">
               <TerminalIcon className="text-primary w-6 h-6" />
               <div>
-                <div className="text-sm font-bold uppercase">DEVELOPMENT_ENGINE</div>
-                <div className="text-xs text-on-surface-variant">Full-stack solutions with a focus on high-performance architecture.</div>
+                <div className="text-sm font-bold uppercase">{t('terminal.dev_engine')}</div>
+                <div className="text-xs text-on-surface-variant">{t('terminal.dev_engine_desc')}</div>
               </div>
             </div>
             <div className="flex gap-4 items-center p-4 bg-surface-container-high/50 border border-outline-variant/5">
               <Music className="text-secondary w-6 h-6" />
               <div>
-                <div className="text-sm font-bold uppercase">STUDIO_OUTPUT</div>
-                <div className="text-xs text-on-surface-variant">Creating immersive auditory experiences for the nightcore collective.</div>
+                <div className="text-sm font-bold uppercase">{t('terminal.studio_output')}</div>
+                <div className="text-xs text-on-surface-variant">{t('terminal.studio_output_desc')}</div>
               </div>
             </div>
           </div>
@@ -123,8 +125,8 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
       <section className="border-t border-outline-variant/10 pt-16">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="space-y-2 text-center md:text-left">
-            <h2 className="font-headline text-3xl font-black uppercase tracking-tighter">ESTABLISH_CONTACT_LINK</h2>
-            <p className="text-on-surface-variant text-sm uppercase tracking-widest">SECURE_UPLINK_AVAILABLE // STATUS: READY</p>
+            <h2 className="font-headline text-3xl font-black uppercase tracking-tighter">{t('terminal.contact')}</h2>
+            <p className="text-on-surface-variant text-sm uppercase tracking-widest">{t('terminal.contact_status')}</p>
           </div>
           <div className="flex flex-wrap justify-center md:justify-start gap-4">
             {[

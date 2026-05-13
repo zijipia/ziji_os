@@ -1,14 +1,18 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Terminal as TerminalIcon, Settings } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Navbar = () => {
+  const { t } = useLanguage();
   const navItems = [
-    { label: 'TERMINAL', path: '/' },
-    { label: 'ARCHIVES', path: '/archives' },
-    { label: 'SPECS', path: '/specs' },
-    { label: 'STUDIO', path: '/studio' },
-    { label: 'PORTAL', path: '/portal' },
+    { label: t('nav.terminal'), path: '/' },
+    { label: t('nav.archives'), path: '/archives' },
+    { label: t('nav.specs'), path: '/specs' },
+    { label: t('nav.showcase'), path: '/showcase' },
+    { label: t('nav.gaming'), path: '/gaming' },
+    { label: t('nav.studio'), path: '/studio' },
+    { label: t('nav.portal'), path: '/portal' },
   ];
 
   return (

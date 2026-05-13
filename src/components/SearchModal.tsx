@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search as SearchIcon, X, Terminal, Cpu, ChevronRight, Loader2 } from 'lucide-react';
+import { Search as SearchIcon, X, Terminal, Cpu, ChevronRight, Loader2, Calendar } from 'lucide-react';
 import { performAISearch, SearchResult } from '../services/searchService';
-import { Project, Spec } from '../services/dataService';
+import { Project, Spec, Milestone } from '../services/dataService';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -10,6 +12,8 @@ interface SearchModalProps {
 }
 
 const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useLanguage();
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -62,7 +66,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="SEARCH_ZIJI_OS_ARCHIVES..."
+                  placeholder={t('search.placeholder')}
                   className="flex-1 bg-transparent border-none outline-none text-on-surface font-headline placeholder:text-on-surface-variant/50 uppercase tracking-widest text-sm"
                 />
                 <button 
@@ -80,7 +84,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex flex-col items-center justify-center py-12 space-y-4">
                   <Loader2 className="w-8 h-8 text-primary animate-spin" />
                   <span className="text-[10px] font-headline uppercase tracking-[0.3em] text-primary animate-pulse">
-                    ANALYZING_NEURAL_DATA...
+                    {t('search.analyzing')}
                   </span>
                 </div>
               ) : results.length > 0 ? (
@@ -96,8 +100,10 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                         <div className="flex items-center gap-2">
                           {result.type === 'PROJECT' ? (
                             <Terminal className="w-4 h-4 text-primary" />
-                          ) : (
+                          ) : result.type === 'SPEC' ? (
                             <Cpu className="w-4 h-4 text-secondary" />
+                          ) : (
+                            <Calendar className="w-4 h-4 text-tertiary" />
                           )}
                           <span className="text-[10px] font-headline uppercase tracking-widest text-on-surface-variant">
                             {result.type}
@@ -124,13 +130,17 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                             </span>
                           ))}
                         </div>
-                      ) : (
+                      ) : result.type === 'SPEC' ? (
                         <div className="flex flex-wrap gap-2 mb-4">
                           {(result.data as Spec).items.slice(0, 3).map(item => (
                             <span key={item} className="text-[9px] px-1.5 py-0.5 bg-secondary/10 text-secondary uppercase">
                               {item}
                             </span>
                           ))}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-on-surface-variant mb-4">
+                          {t(`showcase.${(result.data as Milestone).text}`)}
                         </div>
                       )}
 
@@ -144,10 +154,20 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                           >
                             OPEN_REPOSITORY <ChevronRight className="w-3 h-3" />
                           </a>
+                        ) : result.type === 'SPEC' ? (
+                          <button 
+                            onClick={() => { navigate('/specs'); onClose(); }}
+                            className="flex items-center gap-1 text-[10px] font-headline font-bold text-secondary uppercase tracking-widest"
+                          >
+                            VIEW_SPEC_MODULE <ChevronRight className="w-3 h-3" />
+                          </button>
                         ) : (
-                          <span className="text-[10px] font-headline font-bold text-secondary uppercase tracking-widest">
-                            VIEW_SPEC_MODULE
-                          </span>
+                          <button 
+                            onClick={() => { navigate('/showcase'); onClose(); }}
+                            className="flex items-center gap-1 text-[10px] font-headline font-bold text-tertiary uppercase tracking-widest"
+                          >
+                            VIEW_EVENT_LOG <ChevronRight className="w-3 h-3" />
+                          </button>
                         )}
                       </div>
                     </motion.div>
@@ -156,13 +176,13 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
               ) : query && !isSearching ? (
                 <div className="text-center py-12">
                   <p className="text-xs text-on-surface-variant uppercase tracking-widest">
-                    NO_RELEVANT_DATA_FOUND_IN_ARCHIVES
+                    {t('search.no_results')}
                   </p>
                 </div>
               ) : (
                 <div className="text-center py-12 space-y-4">
                   <p className="text-xs text-on-surface-variant uppercase tracking-widest">
-                    ENTER_QUERY_TO_INITIATE_AI_SEARCH
+                    {t('search.initiate')}
                   </p>
                   <div className="flex justify-center gap-4">
                     {['React', 'TypeScript', 'Hardware', 'Music'].map(suggestion => (
@@ -187,11 +207,11 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                 <span className="text-[8px] font-headline uppercase tracking-widest text-on-surface-variant">
-                  AI_ENGINE: GEMINI_3_FLASH
+                  {t('search.ai_engine')}
                 </span>
               </div>
               <span className="text-[8px] font-headline uppercase tracking-widest text-on-surface-variant/50">
-                ESC_TO_CLOSE // ENTER_TO_EXECUTE
+                {t('search.esc_to_close')}
               </span>
             </div>
           </motion.div>

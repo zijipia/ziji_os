@@ -15,6 +15,15 @@ export interface Spec {
   description?: string;
 }
 
+export interface Milestone {
+  year: string;
+  text: string;
+  iconType: 'school' | 'youtube' | 'graduation' | 'trophy' | 'map' | 'users';
+  image?: string;
+  url?: string;
+  color: 'primary' | 'secondary' | 'tertiary';
+}
+
 export const fetchRepos = async (): Promise<Project[]> => {
   try {
     const [res1, res2] = await Promise.all([
@@ -74,6 +83,69 @@ export const getSpecs = (): Spec[] => {
       category: 'SOFTWARE_AUDIO',
       items: ['Ableton Live 12', 'Serum / Vital', 'UAD Console'],
       description: 'Music production and audio engineering stack.'
+    }
+  ];
+};
+
+export const getMilestones = (): Milestone[] => {
+  return [
+    {
+      year: '2009',
+      iconType: 'school',
+      text: 'm2009',
+      color: 'primary'
+    },
+    {
+      year: '2014',
+      iconType: 'school',
+      text: 'm2014',
+      color: 'primary'
+    },
+    {
+      year: '2017',
+      iconType: 'school',
+      text: 'm2017',
+      color: 'primary'
+    },
+    {
+      year: '2019',
+      iconType: 'youtube',
+      text: 'm2019',
+      url: 'https://www.youtube.com/channel/UCI-YDpBuibRCPIxlalAJKOQ',
+      color: 'secondary'
+    },
+    {
+      year: '2021',
+      iconType: 'graduation',
+      text: 'm2021_study',
+      color: 'primary'
+    },
+    {
+      year: '2021',
+      iconType: 'trophy',
+      text: 'm2021_robot',
+      image: 'https://github.com/user-attachments/assets/f256211b-f83c-46b5-b290-67482988490f',
+      color: 'tertiary'
+    },
+    {
+      year: '2025',
+      iconType: 'graduation',
+      text: 'm2025',
+      image: 'https://github.com/user-attachments/assets/a4162d6d-1925-48f0-b1bf-182431b932f0',
+      color: 'primary'
+    },
+    {
+      year: '2025',
+      iconType: 'users',
+      text: 'm2025_friends',
+      image: 'https://github.com/user-attachments/assets/2fabcff1-b41d-4f23-bd6c-47d6795e8d18',
+      color: 'secondary'
+    },
+    {
+      year: '2026',
+      iconType: 'map',
+      text: 'm2026',
+      color: 'tertiary'
     }
   ];
 };

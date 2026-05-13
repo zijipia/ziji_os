@@ -1,12 +1,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { fetchRepos, getSpecs, Project, Spec } from "./dataService";
+import { fetchRepos, getSpecs, getMilestones, Project, Spec, Milestone } from "./dataService";
 
 export interface SearchResult {
-  type: 'PROJECT' | 'SPEC';
+  type: 'PROJECT' | 'SPEC' | 'MILESTONE';
   id: string;
   title: string;
   relevanceReason: string;
-  data: Project | Spec;
+  data: Project | Spec | Milestone;
 }
 
 export const performAISearch = async (query: string): Promise<SearchResult[]> => {
@@ -14,10 +14,12 @@ export const performAISearch = async (query: string): Promise<SearchResult[]> =>
   
   const projects = await fetchRepos();
   const specs = getSpecs();
+  const milestones = getMilestones();
 
   const searchableData = [
     ...projects.map(p => ({ id: p.id, type: 'PROJECT', title: p.title, description: p.description, tags: p.tags })),
-    ...specs.map((s, i) => ({ id: `spec-${i}`, type: 'SPEC', title: s.category, description: s.description, items: s.items }))
+    ...specs.map((s, i) => ({ id: `spec-${i}`, type: 'SPEC', title: s.category, description: s.description, items: s.items })),
+    ...milestones.map((m, i) => ({ id: `milestone-${i}`, type: 'MILESTONE', title: m.year, description: m.text }))
   ];
 
   const prompt = `
@@ -69,7 +71,7 @@ export const performAISearch = async (query: string): Promise<SearchResult[]> =>
             data: project
           };
         }
-      } else {
+      } else if (res.type === 'SPEC') {
         const index = parseInt(res.id.split('-')[1]);
         const spec = specs[index];
         if (spec) {
@@ -79,6 +81,18 @@ export const performAISearch = async (query: string): Promise<SearchResult[]> =>
             title: spec.category,
             relevanceReason: res.relevanceReason,
             data: spec
+          };
+        }
+      } else if (res.type === 'MILESTONE') {
+        const index = parseInt(res.id.split('-')[1]);
+        const milestone = milestones[index];
+        if (milestone) {
+          return {
+            type: 'MILESTONE',
+            id: res.id,
+            title: `MILESTONE: ${milestone.year}`,
+            relevanceReason: res.relevanceReason,
+            data: milestone
           };
         }
       }

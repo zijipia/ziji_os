@@ -6,7 +6,8 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Activity, Bot, Search as SearchIcon } from 'lucide-react';
+import { Activity, Bot, Search as SearchIcon, Languages } from 'lucide-react';
+import { useLanguage } from './contexts/LanguageContext';
 
 // Components
 import Navbar from './components/Navbar';
@@ -20,14 +21,18 @@ import TerminalPage from './pages/Terminal';
 import ArchivesPage from './pages/Archives';
 import SpecsPage from './pages/Specs';
 import StudioPage from './pages/Studio';
+import ShowcasePage from './pages/Showcase';
+import GamingPage from './pages/Gaming';
 import PortalPage from './pages/Portal';
 import ShellPage from './pages/Shell';
 import SettingsPage from './pages/Settings';
 
 // Types
 import { AppSettings } from './types';
+import { Language } from './constants/translations';
 
 export default function App() {
+  const { language, setLanguage } = useLanguage();
   const location = useLocation();
   const [settings, setSettings] = useState<AppSettings>(() => {
     const saved = localStorage.getItem('ziji_settings');
@@ -41,6 +46,13 @@ export default function App() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const toggleLanguage = () => {
+    const langs: Language[] = ['en', 'vi', 'ja', 'zh'];
+    const currentIndex = langs.indexOf(language);
+    const nextIndex = (currentIndex + 1) % langs.length;
+    setLanguage(langs[nextIndex]);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -98,6 +110,8 @@ export default function App() {
               <Route path="/archives" element={<ArchivesPage transition={transition} />} />
               <Route path="/specs" element={<SpecsPage transition={transition} />} />
               <Route path="/studio" element={<StudioPage transition={transition} />} />
+              <Route path="/showcase" element={<ShowcasePage transition={transition} />} />
+              <Route path="/gaming" element={<GamingPage transition={transition} />} />
               <Route path="/portal" element={<PortalPage transition={transition} />} />
               <Route path="/shell" element={<ShellPage transition={transition} />} />
               <Route path="/settings" element={<SettingsPage settings={settings} setSettings={setSettings} transition={transition} />} />
@@ -120,6 +134,16 @@ export default function App() {
 
       {/* Floating Action Buttons */}
       <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
+        <button 
+          onClick={toggleLanguage}
+          className="w-14 h-14 rounded-full bg-surface-container-high text-secondary border border-secondary/30 shadow-[0_0_15px_rgba(129,236,255,0.2)] flex items-center justify-center hover:scale-110 hover:bg-secondary hover:text-on-surface transition-all group relative"
+          title="Switch Language"
+        >
+          <Languages className="w-6 h-6" />
+          <span className="absolute -left-12 bg-surface-container-highest px-2 py-1 rounded text-[10px] font-headline opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase">
+            {language}
+          </span>
+        </button>
         <button 
           onClick={() => setIsSearchOpen(true)}
           className="w-14 h-14 rounded-full bg-surface-container-high text-primary border border-primary/30 shadow-[0_0_15px_rgba(129,236,255,0.2)] flex items-center justify-center hover:scale-110 hover:bg-primary hover:text-on-primary transition-all"
