@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Terminal as TerminalIcon, Music, Mail, Facebook, Github, Disc, Youtube } from 'lucide-react';
+import { Terminal as TerminalIcon, Music, Mail, Youtube } from 'lucide-react';
 import { Module } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { DiscordIcon, FacebookIcon, GithubIcon, YoutubeIcon, EmailIcon } from '../components/CustomIcons';
+
 
 const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
   const navigate = useNavigate();
@@ -22,7 +24,7 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
         <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-l-2 border-primary/20 pl-8">
           <div className="space-y-2">
             <span className="font-headline text-primary uppercase tracking-[0.3em] text-xs">{t('terminal.status')}</span>
-            <h1 className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none font-vietnam">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-bold tracking-tighter uppercase leading-none font-vietnam">
               {t('terminal.initiating')} <span className="text-primary">Ziji</span><br />
               <span className="text-secondary">NG.THANH PHÚ</span>
             </h1>
@@ -125,26 +127,26 @@ const TerminalPage: React.FC<{ transition: any }> = ({ transition }) => {
       <section className="border-t border-outline-variant/10 pt-16">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="space-y-2 text-center md:text-left">
-            <h2 className="font-headline text-3xl font-black uppercase tracking-tighter">{t('terminal.contact')}</h2>
+            <h2 className="font-headline text-3xl font-bold uppercase tracking-tighter">{t('terminal.contact')}</h2>
             <p className="text-on-surface-variant text-sm uppercase tracking-widest">{t('terminal.contact_status')}</p>
           </div>
           <div className="flex flex-wrap justify-center md:justify-start gap-4">
             {[
-              { icon: Mail, url: 'mailto:contact@ziji.world', color: 'primary' },
-              { icon: Facebook, url: 'https://www.facebook.com/Ziji.Pia', color: 'primary' },
-              { icon: Github, url: 'https://github.com/zijipia', color: 'secondary' },
-              { icon: Disc, url: 'https://discord.gg/zaskhD7PTW', color: 'tertiary' },
-              { icon: Youtube, url: 'https://www.youtube.com/@ZijiStudio', color: 'secondary' },
-              { icon: Youtube, url: 'https://www.youtube.com/@ZijiNightcore', color: 'secondary' },
+              { icon: EmailIcon, url: 'mailto:contact@ziji.world', color: 'primary' },
+              { icon: FacebookIcon, url: 'https://www.facebook.com/Ziji.Pia', color: 'primary' },
+              { icon: GithubIcon, url: 'https://github.com/zijipia', color: 'secondary' },
+              { icon: DiscordIcon, url: 'https://discord.com/users/661968947327008768', color: 'tertiary' },
+              { icon: YoutubeIcon, url: 'https://www.youtube.com/@ZijiStudio', color: 'secondary' },
+              { icon: YoutubeIcon, url: 'https://www.youtube.com/@ZijiNightcore', color: 'secondary' },
             ].map((social, i) => (
               <a 
                 key={i}
                 href={social.url} 
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`w-10 h-10 md:w-12 md:h-12 rounded-full border border-${social.color}/30 flex items-center justify-center text-${social.color} hover:bg-${social.color} hover:text-on-surface transition-all shadow-lg hover:shadow-${social.color}/20`}
+                className={`w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-background transition-all shadow-lg hover:shadow-white/10`}
               >
-                <social.icon className="w-5 h-5" />
+                <social.icon size={20} className="w-5 h-5" />
               </a>
             ))}
           </div>

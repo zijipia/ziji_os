@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Bot, User, Send, Loader2, X, Minimize2, Maximize2 } from 'lucide-react';
+import { User, Send, Loader2, X, Minimize2, Maximize2 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
+import { AIIcon } from './CustomIcons';
 
 interface Message {
   role: 'user' | 'bot';
@@ -100,8 +101,8 @@ const NeuralAssistant: React.FC<NeuralAssistantProps> = ({ isOpen, onClose }) =>
               >
                 {aiChat.length === 0 && (
                   <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
-                    <Bot className="w-12 h-12" />
-                    <p className="text-xs font-headline uppercase tracking-widest">INITIALIZING_NEURAL_LINK...<br/>AWAITING_INPUT</p>
+                    <AIIcon size={48} className="text-white" />
+                    <p className="text-xs font-headline uppercase tracking-widest text-white">INITIALIZING_NEURAL_LINK...<br/>AWAITING_INPUT</p>
                   </div>
                 )}
                 {aiChat.map((msg, i) => (
@@ -111,8 +112,8 @@ const NeuralAssistant: React.FC<NeuralAssistantProps> = ({ isOpen, onClose }) =>
                     key={i} 
                     className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                   >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary/20 text-primary' : 'bg-secondary/20 text-secondary'}`}>
-                      {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary/20 text-primary' : 'bg-secondary/20 text-white'}`}>
+                      {msg.role === 'user' ? <User className="w-4 h-4" /> : <AIIcon size={16} className="text-white" />}
                     </div>
                     <div className={`p-4 rounded-2xl text-sm max-w-[80%] ${msg.role === 'user' ? 'bg-primary/10 text-on-surface border-r-2 border-primary rounded-tr-none' : 'bg-surface-container-high text-on-surface border-l-2 border-secondary rounded-tl-none'}`}>
                       {msg.text}
@@ -121,8 +122,8 @@ const NeuralAssistant: React.FC<NeuralAssistantProps> = ({ isOpen, onClose }) =>
                 ))}
                 {isChatting && (
                   <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-secondary/20 text-secondary flex items-center justify-center shrink-0">
-                      <Bot className="w-4 h-4" />
+                    <div className="w-8 h-8 rounded-full bg-secondary/20 text-white flex items-center justify-center shrink-0">
+                      <AIIcon size={16} className="text-white" />
                     </div>
                     <div className="p-4 bg-surface-container-high rounded-2xl rounded-tl-none flex gap-1">
                       <div className="w-1 h-1 bg-secondary rounded-full animate-bounce"></div>

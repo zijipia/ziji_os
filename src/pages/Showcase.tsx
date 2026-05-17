@@ -45,7 +45,7 @@ const ShowcasePage: React.FC<{ transition: any }> = ({ transition }) => {
           </motion.div>
           <div className="space-y-2 text-center md:text-left">
             <span className="font-headline text-primary uppercase tracking-[0.3em] text-xs">{t('showcase.subtitle')}</span>
-            <h1 className="font-headline text-6xl font-black tracking-tight uppercase">{t('showcase.title')}</h1>
+            <h1 className="font-headline text-6xl font-bold tracking-tight uppercase">{t('showcase.title')}</h1>
           </div>
         </div>
         <div className="text-right font-headline text-on-surface-variant text-sm space-y-1 hidden md:block">
@@ -70,7 +70,7 @@ const ShowcasePage: React.FC<{ transition: any }> = ({ transition }) => {
                 <div className={`w-16 h-16 rounded-xl bg-surface-container-low border border-outline-variant/20 flex items-center justify-center text-${milestone.color} shadow-[0_0_15px_rgba(var(--${milestone.color}-rgb),0.1)] group-hover:scale-110 transition-transform relative z-10`}>
                   {getIcon(milestone.iconType, milestone.color)}
                 </div>
-                <div className="md:hidden font-headline text-2xl font-black text-on-surface flex items-center gap-2">
+                <div className="md:hidden font-headline text-2xl font-bold text-on-surface flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-on-surface-variant" />
                   {milestone.year}
                 </div>
@@ -82,7 +82,7 @@ const ShowcasePage: React.FC<{ transition: any }> = ({ transition }) => {
 
               <div className="flex-1 space-y-4">
                 <div className="flex items-baseline gap-4">
-                  <div className="hidden md:block font-headline text-3xl font-black text-on-surface uppercase tracking-tight">
+                  <div className="hidden md:block font-headline text-3xl font-bold text-on-surface uppercase tracking-tight">
                     {milestone.year}
                   </div>
                   <div className={`h-px flex-1 bg-outline-variant/10 hidden md:block`}></div>

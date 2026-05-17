@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Activity, Facebook, Github, Disc, Youtube, ExternalLink, Sparkles, Loader2 } from 'lucide-react';
+import { Activity,  ExternalLink, Sparkles, Loader2 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
+import { DiscordIcon, FacebookIcon, GithubIcon, YoutubeIcon } from '../components/CustomIcons';
 
 const PortalPage: React.FC<{ transition: any }> = ({ transition }) => {
   const [formData, setFormData] = useState({
@@ -123,11 +124,11 @@ const PortalPage: React.FC<{ transition: any }> = ({ transition }) => {
             </h2>
             <div className="space-y-4">
               {[
-                { icon: Facebook, label: 'FACEBOOK_NODE', url: 'https://www.facebook.com/Ziji.Pia' },
-                { icon: Github, label: 'GITHUB_REPO', url: 'https://github.com/zijipia' },
-                { icon: Disc, label: 'DISCORD_VOID', url: 'https://discord.gg/zaskhD7PTW' },
-                { icon: Youtube, label: 'STUDIO_CHANNEL', url: 'https://www.youtube.com/@ZijiStudio' },
-                { icon: Youtube, label: 'NIGHTCORE_CHANNEL', url: 'https://www.youtube.com/@ZijiNightcore' },
+                          { label: 'FACEBOOK_NODE', url: 'https://www.facebook.com/Ziji.Pia', icon: FacebookIcon },
+          { label: 'GITHUB_REPO', url: 'https://github.com/zijipia', icon: GithubIcon },
+          { label: 'DISCORD_VOID', url: 'https://discord.com/users/661968947327008768', icon: DiscordIcon },
+          { label: 'STUDIO_CHANNEL', url: 'https://www.youtube.com/@ZijiStudio', icon: YoutubeIcon },
+          { label: 'NIGHTCORE_CHANNEL', url: 'https://www.youtube.com/@ZijiNightcore', icon: YoutubeIcon },
               ].map((node, i) => (
                 <a 
                   key={i} 

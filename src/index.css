@@ -22,7 +22,9 @@
   --color-on-surface-variant: #a9abb0;
   --color-outline-variant: #46484c;
 }
-
+@utility font-vietnam {
+  font-family: var(--font-vietnam);
+}
 @layer base {
   body {
     @apply bg-background text-on-surface font-body selection:bg-primary/30;
@@ -61,6 +63,8 @@
   .corner-clip {
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
   }
+  .scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;700;900&family=Be+Vietnam+Pro:wght@400;700;900&display=swap');
+}
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;700;900&family=Be+Vietnam+Pro:wght@100..900&display=swap');

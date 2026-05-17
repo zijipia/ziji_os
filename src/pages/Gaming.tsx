@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Gamepad2, Swords, User, Clock, ExternalLink, Hash } from 'lucide-react';
+import { User, Clock, ExternalLink, Hash } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { GenshinIcon, CSIcon } from '../components/CustomIcons';
 
 const GamingPage: React.FC<{ transition: any }> = ({ transition }) => {
   const { t } = useLanguage();
@@ -13,7 +14,7 @@ const GamingPage: React.FC<{ transition: any }> = ({ transition }) => {
       stats: [
         { label: 'PLAYTIME', value: t('gaming.cs2_hours'), icon: <Clock className="w-4 h-4" /> }
       ],
-      icon: <Swords className="w-8 h-8 text-secondary" />,
+      icon: <CSIcon size={32} className="text-white" />,
       color: 'secondary',
       imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop'
     },
@@ -24,7 +25,7 @@ const GamingPage: React.FC<{ transition: any }> = ({ transition }) => {
         { label: 'OPERATOR', value: t('gaming.genshin_user'), icon: <User className="w-4 h-4" /> },
         { label: 'IDENTIFIER', value: t('gaming.genshin_uid'), icon: <Hash className="w-4 h-4" /> }
       ],
-      icon: <Gamepad2 className="w-8 h-8 text-primary" />,
+      icon: <GenshinIcon size={32} className="text-white" />,
       color: 'primary',
       imageUrl: 'https://images.unsplash.com/photo-1614027164847-1b2809eb189d?q=80&w=2000&auto=format&fit=crop'
     }
@@ -41,7 +42,7 @@ const GamingPage: React.FC<{ transition: any }> = ({ transition }) => {
       <header className="flex flex-col md:flex-row justify-between items-end gap-8 border-l-2 border-secondary/20 pl-8">
         <div className="space-y-2">
           <span className="font-headline text-secondary uppercase tracking-[0.3em] text-xs">{t('gaming.subtitle')}</span>
-          <h1 className="font-headline text-6xl font-black tracking-tight uppercase">{t('gaming.title')}</h1>
+          <h1 className="font-headline text-6xl font-bold tracking-tight uppercase">{t('gaming.title')}</h1>
         </div>
         <div className="flex gap-4">
           <a 
@@ -90,7 +91,7 @@ const GamingPage: React.FC<{ transition: any }> = ({ transition }) => {
               </div>
 
               <div className="space-y-1">
-                <h2 className="text-3xl font-black font-headline tracking-tighter uppercase group-hover:text-secondary transition-colors">
+                <h2 className="text-3xl font-bold font-headline tracking-tighter uppercase group-hover:text-secondary transition-colors">
                   {game.title}
                 </h2>
                 <div className="h-1 w-12 bg-gradient-to-r from-secondary to-transparent"></div>
